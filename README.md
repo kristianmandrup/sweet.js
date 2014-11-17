@@ -24,7 +24,7 @@ And compile your sweet macro enhanced code:
 $ sjs --output compiled.js my_sweet_code.js
 ```
 
-## Sharing 
+## Sharing
 
 You can collect your macros into a single module file to share with your other code or on npm. Full details [here](https://github.com/mozilla/sweet.js/wiki/modules) but the basic idea is to define your macros in a file `macros.js` and use the `export` keyword:
 
@@ -78,7 +78,20 @@ $ grunt dist
 $ git add lib/
 $ git commit -m "sweet!"
 ```
-    
+
+## Debugging
+
+Comes with a `sjs-debug` binary in `/bin/sjs-debug`.
+To run it first:
+
+``
+
+Build and run the tests:
+
+```sh
+$ grunt
+```
+
 
 ## Credits
 

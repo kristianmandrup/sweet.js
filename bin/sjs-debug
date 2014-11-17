@@ -1,0 +1,39 @@
+#!/usr/bin/env node-debug
+
+var parser = require("../build/lib/parser");
+var expander = require("../build/lib/expander");
+var patterns = require("../build/lib/patterns");
+var sweet = require("../build/lib/sweet");
+var codegen = require("escodegen");
+
+var fs = require("fs");
+
+var program = require('commander');
+
+program
+  .version('0.0.1')
+  .usage('<files>')
+
+  .on('--help', function(){
+    console.log('requires that you have built sweet.js');
+    console.log('in the console/terminal run: grunt');
+    console.log('which will build the files (will create a /build folder)');
+    console.log('Then you can run: sjs-debug <files ...>');
+    console.log('Enjoy :)');
+  })
+  .parse(process.argv);
+
+var files = program.args;
+
+files.forEach(function(file) {
+  compileMacro(file);
+})
+
+function compileMacro(file) {
+  var filePath = "./" + file;
+  var source = fs.readFileSync(filePath, "utf8");
+
+  var result = sweet.compile(source, {filename: filePath});
+
+  console.log(codegen.generate(parser.parse(result)));
+}

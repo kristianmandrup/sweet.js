@@ -26,3 +26,5 @@ _site
 
 .tern-port
 .projectile
+
+browser/scripts
