@@ -25,15 +25,22 @@ program
 
 var files = program.args;
 
-files.forEach(function(file) {
-  compileMacro(file);
+// read src of all files and push src into list
+var filesSrc = files.map(function(file) {
+  return readFile(file));
 })
+// join all src codes in that order
+var fullSrc = filesSrc.join('\n')
+
+// compile concatenated src
+compileMacro(fullSrc);
+
+function readFile(file) {
+  var filePath = "./" + file;
+  return fs.readFileSync(filePath, "utf8");
+}
 
 function compileMacro(file) {
-  var filePath = "./" + file;
-  var source = fs.readFileSync(filePath, "utf8");
-
   var result = sweet.compile(source, {filename: filePath});
-
-  console.log(codegen.generate(parser.parse(result)));
+  console.log(codegen.generate(parser.parse(result.code)));
 }
