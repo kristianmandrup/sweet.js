@@ -1,9 +1,14 @@
 // import @ from "contracts.js"
-(function (root, factory) {
+// import @ from "contracts.js"
+function (root, factory) {
     if (typeof exports === 'object') {
+        // CommonJS
+        // CommonJS
         // CommonJS
         factory(exports, require('underscore'), require('./parser'), require('./expander'));
     } else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        // AMD. Register as an anonymous module.
         // AMD. Register as an anonymous module.
         define([
             'exports',
@@ -64,6 +69,10 @@
         this.deferredContext = oldstx && oldstx.deferredContext ? oldstx.deferredContext : null;
     }
     Syntax.prototype = {
+        // (Int) -> CSyntax
+        // non mutating
+        // (Int) -> CSyntax
+        // non mutating
         mark: function (newMark) {
             if (this.token.inner) {
                 return syntaxFromToken(this.token, {
@@ -73,6 +82,10 @@
             }
             return syntaxFromToken(this.token, { context: new Mark(newMark, this.context) });
         },
+        // (CSyntax or [...CSyntax], Str) -> CSyntax
+        // non mutating
+        // (CSyntax or [...CSyntax], Str) -> CSyntax
+        // non mutating
         rename: function (id, name, defctx) {
             // defer renaming of delimiters
             if (this.token.inner) {
@@ -232,6 +245,9 @@
     function makeRegex(val, flags, stx) {
         var newstx = mkSyntax(stx, new RegExp(val, flags), parser.Token.RegexLiteral);
         // regex tokens need the extra field literal on token
+        // regex tokens need the extra field literal on token
+        // regex tokens need the extra field literal on token
+        // regex tokens need the extra field literal on token
         newstx.token.literal = val;
         return newstx;
     }
@@ -249,6 +265,8 @@
     }
     function unwrapSyntax(stx) {
         if (Array.isArray(stx) && stx.length === 1) {
+            // pull stx out of single element arrays for convenience
+            // pull stx out of single element arrays for convenience
             // pull stx out of single element arrays for convenience
             stx = stx[0];
         }
@@ -345,17 +363,17 @@
         }
         var token = err.stx.token;
         var lineNumber = _.find([
-                token.sm_startLineNumber,
-                token.sm_lineNumber,
-                token.startLineNumber,
-                token.lineNumber
-            ], _.isNumber);
+            token.sm_startLineNumber,
+            token.sm_lineNumber,
+            token.startLineNumber,
+            token.lineNumber
+        ], _.isNumber);
         var lineStart = _.find([
-                token.sm_startLineStart,
-                token.sm_lineStart,
-                token.startLineStart,
-                token.lineStart
-            ], _.isNumber);
+            token.sm_startLineStart,
+            token.sm_lineStart,
+            token.startLineStart,
+            token.lineStart
+        ], _.isNumber);
         var start = (token.sm_startRange || token.sm_range || token.startRange || token.range)[0];
         var offset = start - lineStart;
         var line = '';
@@ -373,45 +391,45 @@
     function prettyPrint(stxarr, shouldResolve) {
         var indent = 0;
         var unparsedLines = stxarr.reduce(function (acc, stx) {
-                var s = shouldResolve ? expander.resolve(stx) : stx.token.value;
-                // skip the end of file token
-                if (stx.token.type === parser.Token.EOF) {
-                    return acc;
-                }
-                if (stx.token.type === parser.Token.StringLiteral) {
-                    s = '"' + s + '"';
-                }
-                if (s == '{') {
-                    acc[0].str += ' ' + s;
-                    indent++;
-                    acc.unshift({
-                        indent: indent,
-                        str: ''
-                    });
-                } else if (s == '}') {
-                    indent--;
-                    acc.unshift({
-                        indent: indent,
-                        str: s
-                    });
-                    acc.unshift({
-                        indent: indent,
-                        str: ''
-                    });
-                } else if (s == ';') {
-                    acc[0].str += s;
-                    acc.unshift({
-                        indent: indent,
-                        str: ''
-                    });
-                } else {
-                    acc[0].str += (acc[0].str ? ' ' : '') + s;
-                }
+            var s = shouldResolve ? expander.resolve(stx) : stx.token.value;
+            // skip the end of file token
+            if (stx.token.type === parser.Token.EOF) {
                 return acc;
-            }, [{
-                    indent: 0,
+            }
+            if (stx.token.type === parser.Token.StringLiteral) {
+                s = '"' + s + '"';
+            }
+            if (s == '{') {
+                acc[0].str += ' ' + s;
+                indent++;
+                acc.unshift({
+                    indent: indent,
                     str: ''
-                }]);
+                });
+            } else if (s == '}') {
+                indent--;
+                acc.unshift({
+                    indent: indent,
+                    str: s
+                });
+                acc.unshift({
+                    indent: indent,
+                    str: ''
+                });
+            } else if (s == ';') {
+                acc[0].str += s;
+                acc.unshift({
+                    indent: indent,
+                    str: ''
+                });
+            } else {
+                acc[0].str += (acc[0].str ? ' ' : '') + s;
+            }
+            return acc;
+        }, [{
+                indent: 0,
+                str: ''
+            }]);
         return unparsedLines.reduce(function (acc, line) {
             var ind = '';
             while (ind.length < line.indent * 2) {
@@ -448,5 +466,5 @@
     exports$2.SyntaxCaseError = SyntaxCaseError;
     exports$2.throwSyntaxCaseError = throwSyntaxCaseError;
     exports$2.printSyntaxError = printSyntaxError;
-}));
+});
 //# sourceMappingURL=syntax.js.map

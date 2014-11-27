@@ -1,8 +1,12 @@
 (function (root, factory) {
     if (typeof exports === 'object') {
         // CommonJS
+        // CommonJS
+        // CommonJS
         factory(exports, require('underscore'), require('./parser'), require('./expander'), require('./syntax'));
     } else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        // AMD. Register as an anonymous module.
         // AMD. Register as an anonymous module.
         define([
             'exports',
@@ -180,9 +184,9 @@
     }
     function patternToObject(pat) {
         var obj = {
-                type: pat.token.type,
-                value: pat.token.value
-            };
+            type: pat.token.type,
+            value: pat.token.value
+        };
         if (pat.token.inner) {
             obj.inner = pat.token.inner;
         }
@@ -394,6 +398,26 @@
         // should match 1,2,3 and leave foo alone but:
         //     m (1,2,3 foo)
         // should fail to match entirely.
+        // topLevel lets us know if the patterns are on the top level or nested inside
+        // a delimiter:
+        //     case $topLevel (,) ... => { }
+        //     case ($nested (,) ...) => { }
+        // This matters for how we deal with trailing unmatched syntax when the pattern
+        // has an ellipses:
+        //     m 1,2,3 foo
+        // should match 1,2,3 and leave foo alone but:
+        //     m (1,2,3 foo)
+        // should fail to match entirely.
+        // topLevel lets us know if the patterns are on the top level or nested inside
+        // a delimiter:
+        //     case $topLevel (,) ... => { }
+        //     case ($nested (,) ...) => { }
+        // This matters for how we deal with trailing unmatched syntax when the pattern
+        // has an ellipses:
+        //     m 1,2,3 foo
+        // should match 1,2,3 and leave foo alone but:
+        //     m (1,2,3 foo)
+        // should fail to match entirely.
         topLevel = topLevel || false;
         // note that there are two environments floating around,
         // one is the mapping of identifiers to macro definitions (env)
@@ -418,6 +442,10 @@
                     if (pattern.repeat && i + 1 < patterns.length) {
                         var restMatch = matchPatterns(patterns.slice(i + 1), rest, context, topLevel);
                         if (restMatch.success) {
+                            // match the repeat pattern on the empty array to fill in its
+                            // pattern variable in the environment
+                            // match the repeat pattern on the empty array to fill in its
+                            // pattern variable in the environment
                             // match the repeat pattern on the empty array to fill in its
                             // pattern variable in the environment
                             match = matchPattern(pattern, [], context, patternEnv, topLevel);
@@ -477,8 +505,18 @@
                             continue;
                         } else if (rest[0] && rest[0].token.value === pattern.separator.token.value) {
                             // more tokens and the next token matches the separator
+                            // more tokens and the next token matches the separator
+                            // more tokens and the next token matches the separator
                             rest = rest.slice(1);
                         } else if (pattern.separator !== ' ' && rest.length > 0 && i === patterns.length - 1 && topLevel === false) {
+                            // separator is specified, there is a next token, the
+                            // next token doesn't match the separator, there are
+                            // no more patterns, and this is a top level pattern
+                            // so the match has failed
+                            // separator is specified, there is a next token, the
+                            // next token doesn't match the separator, there are
+                            // no more patterns, and this is a top level pattern
+                            // so the match has failed
                             // separator is specified, there is a next token, the
                             // next token doesn't match the separator, there are
                             // no more patterns, and this is a top level pattern
@@ -540,6 +578,8 @@
         var success;
         if (typeof pattern.inner !== 'undefined') {
             if (pattern.class === 'pattern_group') {
+                // pattern groups don't match the delimiters
+                // pattern groups don't match the delimiters
                 // pattern groups don't match the delimiters
                 subMatch = matchPatterns(pattern.inner, stx, context, true);
                 rest = subMatch.rest;
@@ -605,6 +645,9 @@
                     if (patternEnv[pattern.value] && success) {
                         patternEnv[pattern.value].match.push(matchEnv);
                     } else if (patternEnv[pattern.value] === undefined) {
+                        // initialize if necessary
+                        // initialize if necessary
+                        // initialize if necessary
                         // initialize if necessary
                         patternEnv[pattern.value] = {
                             level: 1,
@@ -675,6 +718,8 @@
                 if (match.rest.length) {
                     if (last && last.term && last.term === match.rest[0].term) {
                         // The term tree was split, so its a failed match;
+                        // The term tree was split, so its a failed match;
+                        // The term tree was split, so its a failed match;
                         success = false;
                     } else {
                         prevStx = match.rest;
@@ -694,6 +739,10 @@
                 }
             }
         }
+        // We need to reverse the matches for any top level repeaters because
+        // they match in reverse, and thus put their results in backwards.
+        // We need to reverse the matches for any top level repeaters because
+        // they match in reverse, and thus put their results in backwards.
         // We need to reverse the matches for any top level repeaters because
         // they match in reverse, and thus put their results in backwards.
         _.forEach(patternEnv, function (val, key) {
@@ -766,50 +815,58 @@
                 if (bodyStx.token.type === parser.Token.Delimiter) {
                     bodyStx.expose();
                     var fv = _.filter(freeVarsInPattern(bodyStx.token.inner), function (pat) {
-                            // ignore "patterns"
-                            // that aren't in the
-                            // environment (treat
-                            // them like literals)
-                            return env.hasOwnProperty(pat);
-                        });
+                        // ignore "patterns"
+                        // that aren't in the
+                        // environment (treat
+                        // them like literals)
+                        return env.hasOwnProperty(pat);
+                    });
                     var restrictedEnv = [];
                     var nonScalar = _.find(fv, function (pat) {
-                            return env[pat].level > 0;
-                        });
+                        return env[pat].level > 0;
+                    });
                     assert(typeof nonScalar !== 'undefined', 'must have a least one non-scalar in repeat');
                     var repeatLength = env[nonScalar].match.length;
                     var sameLength = _.all(fv, function (pat) {
-                            return env[pat].level === 0 || env[pat].match.length === repeatLength;
-                        });
+                        return env[pat].level === 0 || env[pat].match.length === repeatLength;
+                    });
                     assert(sameLength, 'all non-scalars must have the same length');
+                    // create a list of envs restricted to the free vars
+                    // create a list of envs restricted to the free vars
                     // create a list of envs restricted to the free vars
                     _.each(_.range(repeatLength), function (idx$2) {
                         var renv = {};
                         _.each(fv, function (pat) {
                             if (env[pat].level === 0) {
                                 // copy scalars over
+                                // copy scalars over
+                                // copy scalars over
+                                // copy scalars over
                                 renv[pat] = env[pat];
                             } else {
+                                // grab the match at this index
+                                // grab the match at this index
+                                // grab the match at this index
                                 // grab the match at this index
                                 renv[pat] = env[pat].match[idx$2];
                             }
                         });
                         var allHaveMatch = Object.keys(renv).every(function (pat) {
-                                return hasMatch(renv[pat]);
-                            });
+                            return hasMatch(renv[pat]);
+                        });
                         if (allHaveMatch) {
                             restrictedEnv.push(renv);
                         }
                     });
                     var transcribed = _.map(restrictedEnv, function (renv) {
-                            if (bodyStx.group) {
-                                return transcribe(bodyStx.token.inner, macroNameStx, renv);
-                            } else {
-                                var newBody$2 = syntaxFromToken(_.clone(bodyStx.token), bodyStx);
-                                newBody$2.token.inner = transcribe(bodyStx.token.inner, macroNameStx, renv);
-                                return newBody$2;
-                            }
-                        });
+                        if (bodyStx.group) {
+                            return transcribe(bodyStx.token.inner, macroNameStx, renv);
+                        } else {
+                            var newBody$2 = syntaxFromToken(_.clone(bodyStx.token), bodyStx);
+                            newBody$2.token.inner = transcribe(bodyStx.token.inner, macroNameStx, renv);
+                            return newBody$2;
+                        }
+                    });
                     var joined;
                     if (bodyStx.group) {
                         joined = joinSyntaxArray(transcribed, bodyStx.separator);
@@ -850,10 +907,10 @@
     }
     function cloneMatch(oldMatch) {
         var newMatch = {
-                success: oldMatch.success,
-                rest: oldMatch.rest,
-                patternEnv: {}
-            };
+            success: oldMatch.success,
+            rest: oldMatch.rest,
+            patternEnv: {}
+        };
         for (var pat in oldMatch.patternEnv) {
             if (oldMatch.patternEnv.hasOwnProperty(pat)) {
                 newMatch.patternEnv[pat] = oldMatch.patternEnv[pat];

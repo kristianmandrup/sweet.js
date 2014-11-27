@@ -23,11 +23,40 @@
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 // import @ from "contracts.js"
-(function (root, factory) {
+/*
+  Copyright (C) 2012 Tim Disney <tim@disnet.me>
+
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+// import @ from "contracts.js"
+function (root, factory) {
     if (typeof exports === 'object') {
+        // CommonJS
+        // CommonJS
         // CommonJS
         factory(exports, require('underscore'), require('./parser'), require('./syntax'), require('./scopedEval'), require('./patterns'), require('escodegen'));
     } else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        // AMD. Register as an anonymous module.
         // AMD. Register as an anonymous module.
         define([
             'exports',
@@ -49,6 +78,9 @@
     var SyntaxCaseError = syn.SyntaxCaseError;
     var unwrapSyntax = syn.unwrapSyntax;
     // used to export "private" methods for unit testing
+    // used to export "private" methods for unit testing
+    // used to export "private" methods for unit testing
+    // used to export "private" methods for unit testing
     exports$2._test = {};
     function StringMap(o) {
         this.__data = o || {};
@@ -65,8 +97,8 @@
         },
         extend: function () {
             var args = _.map(_.toArray(arguments), function (x) {
-                    return x.__data;
-                });
+                return x.__data;
+            });
             _.extend.apply(_, [this.__data].concat(args));
             return this;
         }
@@ -284,13 +316,13 @@
                     return acc;
                 } else if (Array.isArray(self[prop])) {
                     var destArr = _.reduce(self[prop], function (acc$2, t) {
-                            if (t && t.isTermTree) {
-                                push.apply(acc$2, t.destruct());
-                                return acc$2;
-                            }
-                            acc$2.push(t);
+                        if (t && t.isTermTree) {
+                            push.apply(acc$2, t.destruct());
                             return acc$2;
-                        }, []);
+                        }
+                        acc$2.push(t);
+                        return acc$2;
+                    }, []);
                     push.apply(acc, destArr);
                     return acc;
                 } else if (self[prop]) {
@@ -501,6 +533,14 @@
         'isReturnStatement': true,
         'destruct': function () {
             var expr = this.expr.destruct();
+            // need to adjust the line numbers to make sure that the expr
+            // starts on the same line as the return keyword. This might
+            // not be the case if an operator or infix macro perturbed the
+            // line numbers during expansion.
+            // need to adjust the line numbers to make sure that the expr
+            // starts on the same line as the return keyword. This might
+            // not be the case if an operator or infix macro perturbed the
+            // line numbers during expansion.
             // need to adjust the line numbers to make sure that the expr
             // starts on the same line as the return keyword. This might
             // not be the case if an operator or infix macro perturbed the
@@ -855,135 +895,135 @@
     });
     function stxIsUnaryOp(stx) {
         var staticOperators = [
-                '+',
-                '-',
-                '~',
-                '!',
-                'delete',
-                'void',
-                'typeof',
-                'yield',
-                'new',
-                '++',
-                '--'
-            ];
+            '+',
+            '-',
+            '~',
+            '!',
+            'delete',
+            'void',
+            'typeof',
+            'yield',
+            'new',
+            '++',
+            '--'
+        ];
         return _.contains(staticOperators, unwrapSyntax(stx));
     }
     function stxIsBinOp(stx) {
         var staticOperators = [
-                '+',
-                '-',
-                '*',
-                '/',
-                '%',
-                '||',
-                '&&',
-                '|',
-                '&',
-                '^',
-                '==',
-                '!=',
-                '===',
-                '!==',
-                '<',
-                '>',
-                '<=',
-                '>=',
-                'in',
-                'instanceof',
-                '<<',
-                '>>',
-                '>>>'
-            ];
+            '+',
+            '-',
+            '*',
+            '/',
+            '%',
+            '||',
+            '&&',
+            '|',
+            '&',
+            '^',
+            '==',
+            '!=',
+            '===',
+            '!==',
+            '<',
+            '>',
+            '<=',
+            '>=',
+            'in',
+            'instanceof',
+            '<<',
+            '>>',
+            '>>>'
+        ];
         return _.contains(staticOperators, unwrapSyntax(stx));
     }
     function getUnaryOpPrec(op) {
         var operatorPrecedence = {
-                'new': 16,
-                '++': 15,
-                '--': 15,
-                '!': 14,
-                '~': 14,
-                '+': 14,
-                '-': 14,
-                'typeof': 14,
-                'void': 14,
-                'delete': 14,
-                'yield': 2
-            };
+            'new': 16,
+            '++': 15,
+            '--': 15,
+            '!': 14,
+            '~': 14,
+            '+': 14,
+            '-': 14,
+            'typeof': 14,
+            'void': 14,
+            'delete': 14,
+            'yield': 2
+        };
         return operatorPrecedence[op];
     }
     function getBinaryOpPrec(op) {
         var operatorPrecedence = {
-                '*': 13,
-                '/': 13,
-                '%': 13,
-                '+': 12,
-                '-': 12,
-                '>>': 11,
-                '<<': 11,
-                '>>>': 11,
-                '<': 10,
-                '<=': 10,
-                '>': 10,
-                '>=': 10,
-                'in': 10,
-                'instanceof': 10,
-                '==': 9,
-                '!=': 9,
-                '===': 9,
-                '!==': 9,
-                '&': 8,
-                '^': 7,
-                '|': 6,
-                '&&': 5,
-                '||': 4
-            };
+            '*': 13,
+            '/': 13,
+            '%': 13,
+            '+': 12,
+            '-': 12,
+            '>>': 11,
+            '<<': 11,
+            '>>>': 11,
+            '<': 10,
+            '<=': 10,
+            '>': 10,
+            '>=': 10,
+            'in': 10,
+            'instanceof': 10,
+            '==': 9,
+            '!=': 9,
+            '===': 9,
+            '!==': 9,
+            '&': 8,
+            '^': 7,
+            '|': 6,
+            '&&': 5,
+            '||': 4
+        };
         return operatorPrecedence[op];
     }
     function getBinaryOpAssoc(op) {
         var operatorAssoc = {
-                '*': 'left',
-                '/': 'left',
-                '%': 'left',
-                '+': 'left',
-                '-': 'left',
-                '>>': 'left',
-                '<<': 'left',
-                '>>>': 'left',
-                '<': 'left',
-                '<=': 'left',
-                '>': 'left',
-                '>=': 'left',
-                'in': 'left',
-                'instanceof': 'left',
-                '==': 'left',
-                '!=': 'left',
-                '===': 'left',
-                '!==': 'left',
-                '&': 'left',
-                '^': 'left',
-                '|': 'left',
-                '&&': 'left',
-                '||': 'left'
-            };
+            '*': 'left',
+            '/': 'left',
+            '%': 'left',
+            '+': 'left',
+            '-': 'left',
+            '>>': 'left',
+            '<<': 'left',
+            '>>>': 'left',
+            '<': 'left',
+            '<=': 'left',
+            '>': 'left',
+            '>=': 'left',
+            'in': 'left',
+            'instanceof': 'left',
+            '==': 'left',
+            '!=': 'left',
+            '===': 'left',
+            '!==': 'left',
+            '&': 'left',
+            '^': 'left',
+            '|': 'left',
+            '&&': 'left',
+            '||': 'left'
+        };
         return operatorAssoc[op];
     }
     function stxIsAssignOp(stx) {
         var staticOperators = [
-                '=',
-                '+=',
-                '-=',
-                '*=',
-                '/=',
-                '%=',
-                '<<=',
-                '>>=',
-                '>>>=',
-                '|=',
-                '^=',
-                '&='
-            ];
+            '=',
+            '+=',
+            '-=',
+            '*=',
+            '/=',
+            '%=',
+            '<<=',
+            '>>=',
+            '>>>=',
+            '|=',
+            '^=',
+            '&='
+        ];
         return _.contains(staticOperators, unwrapSyntax(stx));
     }
     function enforestVarStatement(stx, context, varStx) {
@@ -1035,9 +1075,9 @@
         var opTerm = Punc.create(stx[0]);
         var opPrevStx = tagWithTerm(opTerm, [stx[0]]).concat(tagWithTerm(left, left.destruct().reverse()), prevStx);
         var opPrevTerms = [
-                opTerm,
-                left
-            ].concat(prevTerms);
+            opTerm,
+            left
+        ].concat(prevTerms);
         var opRes = enforest(rightStx, context, opPrevStx, opPrevTerms);
         if (opRes.result) {
             // Lookbehind was matched, so it may not even be a binop anymore.
@@ -1072,7 +1112,11 @@
             innerTokens = argRes.rest;
             if (innerTokens[0] && innerTokens[0].token.value === ',') {
                 // record the comma for later
+                // record the comma for later
+                // record the comma for later
                 commas.push(innerTokens[0]);
+                // but dump it for the next loop turn
+                // but dump it for the next loop turn
                 // but dump it for the next loop turn
                 innerTokens = innerTokens.slice(1);
             } else {
@@ -1095,6 +1139,9 @@
         };
         return _.map(stx, function (stx$2) {
             if (stx$2.token.type === parser.Token.Delimiter) {
+                // handle tokens with missing line info
+                // handle tokens with missing line info
+                // handle tokens with missing line info
                 // handle tokens with missing line info
                 stx$2.token.startLineNumber = typeof stx$2.token.startLineNumber == 'undefined' ? original.token.lineNumber : stx$2.token.startLineNumber;
                 stx$2.token.endLineNumber = typeof stx$2.token.endLineNumber == 'undefined' ? original.token.lineNumber : stx$2.token.endLineNumber;
@@ -1121,9 +1168,27 @@
                 return stx$2;
             }
             // handle tokens with missing line info
+            // handle tokens with missing line info
+            // handle tokens with missing line info
+            // handle tokens with missing line info
             stx$2.token.lineNumber = typeof stx$2.token.lineNumber == 'undefined' ? original.token.lineNumber : stx$2.token.lineNumber;
             stx$2.token.lineStart = typeof stx$2.token.lineStart == 'undefined' ? original.token.lineStart : stx$2.token.lineStart;
             stx$2.token.range = typeof stx$2.token.range == 'undefined' ? original.token.range : stx$2.token.range;
+            // Only set the sourcemap line info once. Necessary because a single
+            // syntax object can go through expansion multiple times. If at some point
+            // we want to write an expansion stepper this might be a good place to store
+            // intermediate expansion line info (ie push to a stack instead of
+            // just write once).
+            // Only set the sourcemap line info once. Necessary because a single
+            // syntax object can go through expansion multiple times. If at some point
+            // we want to write an expansion stepper this might be a good place to store
+            // intermediate expansion line info (ie push to a stack instead of
+            // just write once).
+            // Only set the sourcemap line info once. Necessary because a single
+            // syntax object can go through expansion multiple times. If at some point
+            // we want to write an expansion stepper this might be a good place to store
+            // intermediate expansion line info (ie push to a stack instead of
+            // just write once).
             // Only set the sourcemap line info once. Necessary because a single
             // syntax object can go through expansion multiple times. If at some point
             // we want to write an expansion stepper this might be a good place to store
@@ -1226,17 +1291,17 @@
             if (e instanceof SyntaxCaseError) {
                 // add a nicer error for syntax case
                 var nameStr = macroObj.fullName.map(function (stx$2) {
-                        return stx$2.token.value;
-                    }).join('');
+                    return stx$2.token.value;
+                }).join('');
                 if (opType != null) {
                     var argumentString = '`' + stxArg.slice(0, 5).map(function (stx$2) {
-                            return stx$2.token.value;
-                        }).join(' ') + '...`';
+                        return stx$2.token.value;
+                    }).join(' ') + '...`';
                     throwSyntaxError('operator', 'Operator `' + nameStr + '` could not be matched with ' + argumentString, head);
                 } else {
                     var argumentString = '`' + stxArg.slice(0, 5).map(function (stx$2) {
-                            return stx$2.token.value;
-                        }).join(' ') + '...`';
+                        return stx$2.token.value;
+                    }).join(' ') + '...`';
                     throwSyntaxError('macro', 'Macro `' + nameStr + '` could not be matched with ' + argumentString, head);
                 }
             } else {
@@ -1330,26 +1395,26 @@
                     var unopPrevStx = tagWithTerm(unopTerm, head.destruct().reverse()).concat(opCtx.prevStx);
                     var unopPrevTerms = [unopTerm].concat(opCtx.prevTerms);
                     var unopOpCtx = _.extend({}, opCtx, {
-                            combine: function (t) {
-                                if (t.isExpr) {
-                                    if (isCustomOp && uopMacroObj.unary) {
-                                        var rt$2 = expandMacro(uopMacroName.concat(t.destruct()), context, opCtx, 'unary');
-                                        var newt = get_expression(rt$2.result, context);
-                                        assert(newt.rest.length === 0, 'should never have left over syntax');
-                                        return opCtx.combine(newt.result);
-                                    }
-                                    return opCtx.combine(UnaryOp.create(uopSyntax, t));
-                                } else {
-                                    // not actually an expression so don't create
-                                    // a UnaryOp term just return with the punctuator
-                                    return opCtx.combine(head);
+                        combine: function (t) {
+                            if (t.isExpr) {
+                                if (isCustomOp && uopMacroObj.unary) {
+                                    var rt$2 = expandMacro(uopMacroName.concat(t.destruct()), context, opCtx, 'unary');
+                                    var newt = get_expression(rt$2.result, context);
+                                    assert(newt.rest.length === 0, 'should never have left over syntax');
+                                    return opCtx.combine(newt.result);
                                 }
-                            },
-                            prec: uopPrec,
-                            prevStx: unopPrevStx,
-                            prevTerms: unopPrevTerms,
-                            op: unopTerm
-                        });
+                                return opCtx.combine(UnaryOp.create(uopSyntax, t));
+                            } else {
+                                // not actually an expression so don't create
+                                // a UnaryOp term just return with the punctuator
+                                return opCtx.combine(head);
+                            }
+                        },
+                        prec: uopPrec,
+                        prevStx: unopPrevStx,
+                        prevTerms: unopPrevTerms,
+                        op: unopTerm
+                    });
                     return step(opRest[0], opRest.slice(1), unopOpCtx);
                 }    // BinOp
                 else if (head.isExpr && (rest[0] && rest[1] && (stxIsBinOp(rest[0]) && !bopMacroObj || bopMacroObj && bopMacroObj.isOp && bopMacroObj.binary))) {
@@ -1359,14 +1424,14 @@
                     var rightStx = rest.slice(1);
                     var leftLeft = opCtx.prevTerms[0] && opCtx.prevTerms[0].isPartial ? opCtx.prevTerms[0] : null;
                     var leftTerm = PartialExpression.create(head.destruct(), leftLeft, function () {
-                            return step(head, [], opCtx);
-                        });
+                        return step(head, [], opCtx);
+                    });
                     var opTerm = PartialOperation.create(op, leftTerm);
                     var opPrevStx = tagWithTerm(opTerm, [rest[0]]).concat(tagWithTerm(leftTerm, head.destruct()).reverse(), opCtx.prevStx);
                     var opPrevTerms = [
-                            opTerm,
-                            leftTerm
-                        ].concat(opCtx.prevTerms);
+                        opTerm,
+                        leftTerm
+                    ].concat(opCtx.prevTerms);
                     var isCustomOp = bopMacroObj && bopMacroObj.isOp && bopMacroObj.binary;
                     var bopPrec;
                     var bopAssoc;
@@ -1400,39 +1465,39 @@
                         opRightStx = rightStx.slice(bopMacroObj.fullName.length - 1);
                     }
                     var bopOpCtx = _.extend({}, opCtx, {
-                            combine: function (right) {
-                                if (right.isExpr) {
-                                    if (isCustomOp && bopMacroObj.binary) {
-                                        var leftStx = left.destruct();
-                                        var rightStx$2 = right.destruct();
-                                        var rt$2 = expandMacro(bopMacroName.concat(syn.makeDelim('()', leftStx, leftStx[0]), syn.makeDelim('()', rightStx$2, rightStx$2[0])), context, opCtx, 'binary');
-                                        var newt = get_expression(rt$2.result, context);
-                                        assert(newt.rest.length === 0, 'should never have left over syntax');
-                                        return {
-                                            term: newt.result,
-                                            prevStx: opPrevStx,
-                                            prevTerms: opPrevTerms
-                                        };
-                                    }
+                        combine: function (right) {
+                            if (right.isExpr) {
+                                if (isCustomOp && bopMacroObj.binary) {
+                                    var leftStx = left.destruct();
+                                    var rightStx$2 = right.destruct();
+                                    var rt$2 = expandMacro(bopMacroName.concat(syn.makeDelim('()', leftStx, leftStx[0]), syn.makeDelim('()', rightStx$2, rightStx$2[0])), context, opCtx, 'binary');
+                                    var newt = get_expression(rt$2.result, context);
+                                    assert(newt.rest.length === 0, 'should never have left over syntax');
                                     return {
-                                        term: BinOp.create(left, op, right),
-                                        prevStx: opPrevStx,
-                                        prevTerms: opPrevTerms
-                                    };
-                                } else {
-                                    return {
-                                        term: head,
+                                        term: newt.result,
                                         prevStx: opPrevStx,
                                         prevTerms: opPrevTerms
                                     };
                                 }
-                            },
-                            prec: bopPrec,
-                            op: opTerm,
-                            stack: newStack,
-                            prevStx: opPrevStx,
-                            prevTerms: opPrevTerms
-                        });
+                                return {
+                                    term: BinOp.create(left, op, right),
+                                    prevStx: opPrevStx,
+                                    prevTerms: opPrevTerms
+                                };
+                            } else {
+                                return {
+                                    term: head,
+                                    prevStx: opPrevStx,
+                                    prevTerms: opPrevTerms
+                                };
+                            }
+                        },
+                        prec: bopPrec,
+                        op: opTerm,
+                        stack: newStack,
+                        prevStx: opPrevStx,
+                        prevTerms: opPrevTerms
+                    });
                     return step(opRightStx[0], opRightStx.slice(1), bopOpCtx);
                 }    // Call
                 else if (head.isExpr && (rest[0] && rest[0].token.type === parser.Token.Delimiter && rest[0].token.value === '()')) {
@@ -1719,6 +1784,8 @@
                     return step(EOF.create(head), [], opCtx);
                 } else {
                     // todo: are we missing cases?
+                    // todo: are we missing cases?
+                    // todo: are we missing cases?
                     assert(false, 'not implemented');
                 }
             }
@@ -1727,14 +1794,14 @@
             if (!head.isMacro && !head.isLetMacro && !head.isAnonMacro && !head.isOperatorDefinition && rest.length && nameInEnv(rest[0], rest.slice(1), context.env) && getMacroInEnv(rest[0], rest.slice(1), context.env).isOp === false) {
                 var infLeftTerm = opCtx.prevTerms[0] && opCtx.prevTerms[0].isPartial ? opCtx.prevTerms[0] : null;
                 var infTerm = PartialExpression.create(head.destruct(), infLeftTerm, function () {
-                        return step(head, [], opCtx);
-                    });
+                    return step(head, [], opCtx);
+                });
                 var infPrevStx = tagWithTerm(infTerm, head.destruct()).reverse().concat(opCtx.prevStx);
                 var infPrevTerms = [infTerm].concat(opCtx.prevTerms);
                 var infRes = expandMacro(rest, context, {
-                        prevStx: infPrevStx,
-                        prevTerms: infPrevTerms
-                    });
+                    prevStx: infPrevStx,
+                    prevTerms: infPrevTerms
+                });
                 if (infRes.prevTerms && infRes.prevTerms.length < infPrevTerms.length) {
                     var infOpCtx = rewindOpCtx(opCtx, infRes);
                     return step(infRes.result[0], infRes.result.slice(1).concat(infRes.rest), infOpCtx);
@@ -1899,6 +1966,9 @@
         function dfs(match) {
             if (match.level === 0) {
                 // replace the match property with the marked syntax
+                // replace the match property with the marked syntax
+                // replace the match property with the marked syntax
+                // replace the match property with the marked syntax
                 match.match = _.map(match.match, function (stx) {
                     return stx.mark(newMark);
                 });
@@ -1926,83 +1996,83 @@
         var flattend = flatten(expanded);
         var bodyCode = codegen.generate(parser.parse(flattend));
         var macroFn = scopedEval(bodyCode, {
-                makeValue: syn.makeValue,
-                makeRegex: syn.makeRegex,
-                makeIdent: syn.makeIdent,
-                makeKeyword: syn.makeKeyword,
-                makePunc: syn.makePunc,
-                makeDelim: syn.makeDelim,
-                filename: context.filename,
-                require: function (id) {
-                    if (context.requireModule) {
-                        return context.requireModule(id, context.filename);
-                    }
-                    return require(id);
-                },
-                getExpr: function (stx) {
-                    var r;
-                    if (stx.length === 0) {
-                        return {
-                            success: false,
-                            result: [],
-                            rest: []
-                        };
-                    }
-                    r = get_expression(stx, context);
-                    return {
-                        success: r.result !== null,
-                        result: r.result === null ? [] : r.result.destruct(),
-                        rest: r.rest
-                    };
-                },
-                getIdent: function (stx) {
-                    if (stx[0] && stx[0].token.type === parser.Token.Identifier) {
-                        return {
-                            success: true,
-                            result: [stx[0]],
-                            rest: stx.slice(1)
-                        };
-                    }
-                    return {
-                        success: false,
-                        result: [],
-                        rest: stx
-                    };
-                },
-                getLit: function (stx) {
-                    if (stx[0] && patternModule.typeIsLiteral(stx[0].token.type)) {
-                        return {
-                            success: true,
-                            result: [stx[0]],
-                            rest: stx.slice(1)
-                        };
-                    }
-                    return {
-                        success: false,
-                        result: [],
-                        rest: stx
-                    };
-                },
-                unwrapSyntax: syn.unwrapSyntax,
-                throwSyntaxError: throwSyntaxError,
-                throwSyntaxCaseError: throwSyntaxCaseError,
-                prettyPrint: syn.prettyPrint,
-                parser: parser,
-                __fresh: fresh,
-                _: _,
-                patternModule: patternModule,
-                getPattern: function (id) {
-                    return context.patternMap.get(id);
-                },
-                getTemplate: function (id) {
-                    return syn.cloneSyntaxArray(context.templateMap.get(id));
-                },
-                applyMarkToPatternEnv: applyMarkToPatternEnv,
-                mergeMatches: function (newMatch, oldMatch) {
-                    newMatch.patternEnv = _.extend({}, oldMatch.patternEnv, newMatch.patternEnv);
-                    return newMatch;
+            makeValue: syn.makeValue,
+            makeRegex: syn.makeRegex,
+            makeIdent: syn.makeIdent,
+            makeKeyword: syn.makeKeyword,
+            makePunc: syn.makePunc,
+            makeDelim: syn.makeDelim,
+            filename: context.filename,
+            require: function (id) {
+                if (context.requireModule) {
+                    return context.requireModule(id, context.filename);
                 }
-            });
+                return require(id);
+            },
+            getExpr: function (stx) {
+                var r;
+                if (stx.length === 0) {
+                    return {
+                        success: false,
+                        result: [],
+                        rest: []
+                    };
+                }
+                r = get_expression(stx, context);
+                return {
+                    success: r.result !== null,
+                    result: r.result === null ? [] : r.result.destruct(),
+                    rest: r.rest
+                };
+            },
+            getIdent: function (stx) {
+                if (stx[0] && stx[0].token.type === parser.Token.Identifier) {
+                    return {
+                        success: true,
+                        result: [stx[0]],
+                        rest: stx.slice(1)
+                    };
+                }
+                return {
+                    success: false,
+                    result: [],
+                    rest: stx
+                };
+            },
+            getLit: function (stx) {
+                if (stx[0] && patternModule.typeIsLiteral(stx[0].token.type)) {
+                    return {
+                        success: true,
+                        result: [stx[0]],
+                        rest: stx.slice(1)
+                    };
+                }
+                return {
+                    success: false,
+                    result: [],
+                    rest: stx
+                };
+            },
+            unwrapSyntax: syn.unwrapSyntax,
+            throwSyntaxError: throwSyntaxError,
+            throwSyntaxCaseError: throwSyntaxCaseError,
+            prettyPrint: syn.prettyPrint,
+            parser: parser,
+            __fresh: fresh,
+            _: _,
+            patternModule: patternModule,
+            getPattern: function (id) {
+                return context.patternMap.get(id);
+            },
+            getTemplate: function (id) {
+                return syn.cloneSyntaxArray(context.templateMap.get(id));
+            },
+            applyMarkToPatternEnv: applyMarkToPatternEnv,
+            mergeMatches: function (newMatch, oldMatch) {
+                newMatch.patternEnv = _.extend({}, oldMatch.patternEnv, newMatch.patternEnv);
+                return newMatch;
+            }
+        });
         return macroFn;
     }
     // similar to `parse1` in the honu paper
@@ -2015,15 +2085,23 @@
             assert(rest[0].token, 'expecting a syntax object');
             f = enforest(rest, context, prevStx, prevTerms);
             // head :: TermTree
+            // head :: TermTree
+            // head :: TermTree
             head = f.result;
+            // rest :: [Syntax]
+            // rest :: [Syntax]
             // rest :: [Syntax]
             rest = f.rest;
             if (!head) {
+                // no head means the expansions stopped prematurely (for stepping)
+                // no head means the expansions stopped prematurely (for stepping)
                 // no head means the expansions stopped prematurely (for stepping)
                 restStx = rest;
                 break;
             }
             if (head.isMacro && expandCount < maxExpands) {
+                // load the macro definition into the environment and continue expanding
+                // load the macro definition into the environment and continue expanding
                 // load the macro definition into the environment and continue expanding
                 macroDefinition = loadMacroDef(head.body, context);
                 var name = head.name.map(unwrapSyntax).join('');
@@ -2039,6 +2117,8 @@
                 continue;
             }
             if (head.isLetMacro && expandCount < maxExpands) {
+                // load the macro definition into the environment and continue expanding
+                // load the macro definition into the environment and continue expanding
                 // load the macro definition into the environment and continue expanding
                 macroDefinition = loadMacroDef(head.body, context);
                 var freshName = fresh();
@@ -2124,6 +2204,15 @@
                     // hack: we want to do the let renaming here, not
                     // in the expansion of `for (...)` so just remove the `let`
                     // keyword
+                    // hack: we want to do the let renaming here, not
+                    // in the expansion of `for (...)` so just remove the `let`
+                    // keyword
+                    // hack: we want to do the let renaming here, not
+                    // in the expansion of `for (...)` so just remove the `let`
+                    // keyword
+                    // hack: we want to do the let renaming here, not
+                    // in the expansion of `for (...)` so just remove the `let`
+                    // keyword
                     head.cond.token.inner = expand([forCond[0]], context).concat(expand(forCond.slice(1), context));
                     // nice and easy case: `for (...) { ... }`
                     if (rest[0] && rest[0].token.value === '{}') {
@@ -2144,6 +2233,10 @@
             }
         }
         return {
+            // prevTerms are stored in reverse for the purposes of infix
+            // lookbehind matching, so we need to re-reverse them.
+            // prevTerms are stored in reverse for the purposes of infix
+            // lookbehind matching, so we need to re-reverse them.
             terms: prevTerms ? prevTerms.reverse() : [],
             restStx: restStx,
             context: context
@@ -2151,6 +2244,12 @@
     }
     function addToDefinitionCtx(idents, defscope, skipRep, paramscope) {
         assert(idents && idents.length > 0, 'expecting some variable identifiers');
+        // flag for skipping repeats since we reuse this function to place both
+        // variables declarations (which need to skip redeclarations) and
+        // macro definitions which don't
+        // flag for skipping repeats since we reuse this function to place both
+        // variables declarations (which need to skip redeclarations) and
+        // macro definitions which don't
         // flag for skipping repeats since we reuse this function to place both
         // variables declarations (which need to skip redeclarations) and
         // macro definitions which don't
@@ -2168,8 +2267,8 @@
                        definition context as is.
                     */
                 var varDeclRep = _.find(defscope, function (def) {
-                        return def.id.token.value === id.token.value && arraysEqual(marksof(def.id.context), marksof(id.context));
-                    });
+                    return def.id.token.value === id.token.value && arraysEqual(marksof(def.id.context), marksof(id.context));
+                });
                 /*
                         When var declaration repeat one of the function parameters:
 
@@ -2180,8 +2279,8 @@
                         we don't need to add the var to the definition context.
                     */
                 var paramDeclRep = _.find(paramscope, function (param) {
-                        return param.token.value === id.token.value && arraysEqual(marksof(param.context), marksof(id.context));
-                    });
+                    return param.token.value === id.token.value && arraysEqual(marksof(param.context), marksof(id.context));
+                });
                 return typeof varDeclRep === 'undefined' && typeof paramDeclRep === 'undefined';
             }
             return true;
@@ -2248,6 +2347,9 @@
             return term;
         } else if (term.isDelimiter) {
             // expand inside the delimiter and then continue on
+            // expand inside the delimiter and then continue on
+            // expand inside the delimiter and then continue on
+            // expand inside the delimiter and then continue on
             term.delim.token.inner = expand(term.delim.expose().token.inner, context);
             return term;
         } else if (term.isNamedFun || term.isAnonFun || term.isCatchClause || term.isArrowFun || term.isModule) {
@@ -2271,27 +2373,35 @@
             }
             bodies = bodies.addDefCtx(newDef);
             var paramNames = _.map(getParamIdentifiers(params), function (param) {
-                    var freshName = fresh();
-                    return {
-                        freshName: freshName,
-                        originalParam: param,
-                        renamedParam: param.rename(param, freshName)
-                    };
-                });
+                var freshName = fresh();
+                return {
+                    freshName: freshName,
+                    originalParam: param,
+                    renamedParam: param.rename(param, freshName)
+                };
+            });
             var bodyContext = makeExpanderContext(_.defaults({
-                    defscope: newDef,
-                    paramscope: paramNames.map(function (p) {
-                        return p.renamedParam;
-                    })
-                }, context));
+                defscope: newDef,
+                // paramscope is used to filter out var redeclarations
+                // paramscope is used to filter out var redeclarations
+                paramscope: paramNames.map(function (p) {
+                    return p.renamedParam;
+                })
+            }, context));
             // rename the function body for each of the parameters
             var renamedBody = _.reduce(paramNames, function (accBody, p) {
-                    return accBody.rename(p.originalParam, p.freshName);
-                }, bodies);
+                return accBody.rename(p.originalParam, p.freshName);
+            }, bodies);
             renamedBody = renamedBody.expose();
             var expandedResult = expandToTermTree(renamedBody.token.inner, bodyContext);
             var bodyTerms = expandedResult.terms;
             if (expandedResult.restStx) {
+                // The expansion was halted prematurely. Just stop and
+                // return what we have so far, along with the rest of the syntax
+                // The expansion was halted prematurely. Just stop and
+                // return what we have so far, along with the rest of the syntax
+                // The expansion was halted prematurely. Just stop and
+                // return what we have so far, along with the rest of the syntax
                 // The expansion was halted prematurely. Just stop and
                 // return what we have so far, along with the rest of the syntax
                 renamedBody.token.inner = expandedResult.terms.concat(expandedResult.restStx);
@@ -2303,8 +2413,8 @@
                 return term;
             }
             var renamedParams = _.map(paramNames, function (p) {
-                    return p.renamedParam;
-                });
+                return p.renamedParam;
+            });
             var flatArgs;
             if (paramSingleIdent) {
                 flatArgs = renamedParams[0];
@@ -2361,8 +2471,8 @@
         assert(context, 'must provide an expander context');
         var trees = expandToTermTree(stx, context);
         var terms = _.map(trees.terms, function (term) {
-                return expandTermTreeToFinal(term, trees.context);
-            });
+            return expandTermTreeToFinal(term, trees.context);
+        });
         if (trees.restStx) {
             terms.push.apply(terms, trees.restStx);
         }
@@ -2449,9 +2559,9 @@
             return loadModuleExports(acc, context.env, mod.exports, mod.env);
         }, modBody);
         var res = expand([
-                syn.makeIdent('module', null),
-                modBody
-            ], context);
+            syn.makeIdent('module', null),
+            modBody
+        ], context);
         res = res[0].destruct();
         res = res[0].token.inner;
         return options.flatten ? flatten(res) : res;
@@ -2469,9 +2579,9 @@
         }, modBody);
         builtinMode = true;
         var moduleRes = expand([
-                syn.makeIdent('module', null),
-                modBody
-            ], context);
+            syn.makeIdent('module', null),
+            modBody
+        ], context);
         builtinMode = false;
         context.exports = _.map(moduleRes[0].exports, function (term) {
             var nameStr, name;
@@ -2507,25 +2617,25 @@
             if (stx$2.token.type === parser.Token.Delimiter) {
                 var exposed = stx$2.expose();
                 var openParen = syntaxFromToken({
-                        type: parser.Token.Punctuator,
-                        value: stx$2.token.value[0],
-                        range: stx$2.token.startRange,
-                        sm_range: typeof stx$2.token.sm_startRange == 'undefined' ? stx$2.token.startRange : stx$2.token.sm_startRange,
-                        lineNumber: stx$2.token.startLineNumber,
-                        sm_lineNumber: typeof stx$2.token.sm_startLineNumber == 'undefined' ? stx$2.token.startLineNumber : stx$2.token.sm_startLineNumber,
-                        lineStart: stx$2.token.startLineStart,
-                        sm_lineStart: typeof stx$2.token.sm_startLineStart == 'undefined' ? stx$2.token.startLineStart : stx$2.token.sm_startLineStart
-                    }, exposed);
+                    type: parser.Token.Punctuator,
+                    value: stx$2.token.value[0],
+                    range: stx$2.token.startRange,
+                    sm_range: typeof stx$2.token.sm_startRange == 'undefined' ? stx$2.token.startRange : stx$2.token.sm_startRange,
+                    lineNumber: stx$2.token.startLineNumber,
+                    sm_lineNumber: typeof stx$2.token.sm_startLineNumber == 'undefined' ? stx$2.token.startLineNumber : stx$2.token.sm_startLineNumber,
+                    lineStart: stx$2.token.startLineStart,
+                    sm_lineStart: typeof stx$2.token.sm_startLineStart == 'undefined' ? stx$2.token.startLineStart : stx$2.token.sm_startLineStart
+                }, exposed);
                 var closeParen = syntaxFromToken({
-                        type: parser.Token.Punctuator,
-                        value: stx$2.token.value[1],
-                        range: stx$2.token.endRange,
-                        sm_range: typeof stx$2.token.sm_endRange == 'undefined' ? stx$2.token.endRange : stx$2.token.sm_endRange,
-                        lineNumber: stx$2.token.endLineNumber,
-                        sm_lineNumber: typeof stx$2.token.sm_endLineNumber == 'undefined' ? stx$2.token.endLineNumber : stx$2.token.sm_endLineNumber,
-                        lineStart: stx$2.token.endLineStart,
-                        sm_lineStart: typeof stx$2.token.sm_endLineStart == 'undefined' ? stx$2.token.endLineStart : stx$2.token.sm_endLineStart
-                    }, exposed);
+                    type: parser.Token.Punctuator,
+                    value: stx$2.token.value[1],
+                    range: stx$2.token.endRange,
+                    sm_range: typeof stx$2.token.sm_endRange == 'undefined' ? stx$2.token.endRange : stx$2.token.sm_endRange,
+                    lineNumber: stx$2.token.endLineNumber,
+                    sm_lineNumber: typeof stx$2.token.sm_endLineNumber == 'undefined' ? stx$2.token.endLineNumber : stx$2.token.sm_endLineNumber,
+                    lineStart: stx$2.token.endLineStart,
+                    sm_lineStart: typeof stx$2.token.sm_endLineStart == 'undefined' ? stx$2.token.endLineStart : stx$2.token.sm_endLineStart
+                }, exposed);
                 if (stx$2.token.leadingComments) {
                     openParen.token.leadingComments = stx$2.token.leadingComments;
                 }
@@ -2558,5 +2668,5 @@
     exports$2.VariableStatement = VariableStatement;
     exports$2.tokensToSyntax = syn.tokensToSyntax;
     exports$2.syntaxToTokens = syn.syntaxToTokens;
-}));
+});
 //# sourceMappingURL=expander.js.map

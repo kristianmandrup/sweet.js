@@ -273,8 +273,27 @@ parseYieldExpression: true
         }
     }
 
+    // reader.isIn(ch, [65, 67]) tries to match on any charcode in list
     function isIn(el, list) {
         return list.indexOf(el) !== -1;
+    }
+
+    // reader.isAnyChar(ch, ':,;')
+    // true if character of charcode matches any character in the list or string
+    function isAnyChar(el, list) {
+        return list.indexOf(toChar(el)) !== -1;
+    }
+
+    function toChar(el) {
+        if (typeof el === 'string')
+          return el;
+        return String.fromCharCode(el);
+    }
+
+    function toCharCode(ch) {
+        if (typeof ch === 'integer')
+            return ch;
+        return ch.charCodeAt(0);
     }
 
     function isDecimalDigit(ch) {
@@ -289,8 +308,11 @@ parseYieldExpression: true
         return '01234567'.indexOf(ch) >= 0;
     }
 
-
     // 7.2 White Space
+
+    function isSpace(ch) {
+        return (ch === 32) // space
+    }
 
     function isWhiteSpace(ch) {
         return (ch === 32) ||  // space
@@ -5551,7 +5573,7 @@ parseYieldExpression: true
         return {
             index: index,
             lineNumber: lineNumber,
-            lineStart: lineStart,
+            lineStart: lineStart
         };
     }
 
@@ -5684,6 +5706,22 @@ parseYieldExpression: true
         isIdentifierStart: isIdentifierStart,
         isIdentifierPart: isIdentifierPart,
         isLineTerminator: isLineTerminator,
+
+        // convert char code to character and back
+        toChar: toChar,
+        toCharCode: toCharCode,
+
+        isIn: isIn,
+        isAnyChar: isAnyChar,
+        isDecimalDigit:isDecimalDigit,
+        isHexDigit: isHexDigit,
+        isOctalDigit: isOctalDigit,
+        isWhiteSpace: isWhiteSpace,
+        isSpace: isSpace,
+        isFutureReservedWord: isFutureReservedWord,
+        isStrictModeReservedWord: isStrictModeReservedWord,
+        isRestrictedWord: isRestrictedWord,
+        isKeyword: isKeyword,
 
         readIdentifier: scanIdentifier,
         readPunctuator: scanPunctuator,

@@ -21,7 +21,30 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-(function (root, factory) {
+/*
+  Copyright (C) 2012 Tim Disney <tim@disnet.me>
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+function (root, factory) {
     if (typeof exports === 'object') {
         var path = require('path');
         var fs = require('fs');
@@ -41,11 +64,16 @@
         };
         factory(exports, require('underscore'), require('./parser'), require('./expander'), require('./syntax'), stxcaseModule, require('escodegen'), require('escope'), fs, path, resolveSync, requireModule);
         // Alow require('./example') for an example.sjs file.
+        // Alow require('./example') for an example.sjs file.
+        // Alow require('./example') for an example.sjs file.
+        // Alow require('./example') for an example.sjs file.
         require.extensions['.sjs'] = function (module, filename) {
             var content = require('fs').readFileSync(filename, 'utf8');
             module._compile(codegen.generate(exports.parse(content, exports.loadedMacros)), filename);
         };
     } else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        // AMD. Register as an anonymous module.
         // AMD. Register as an anonymous module.
         define([
             'exports',
@@ -65,14 +93,14 @@
     var expandModule = makeExpand(expander.expandModule);
     var stxcaseCtx;
     var baseReadtable = Object.create({
-            extend: function (obj) {
-                var extended = Object.create(this);
-                Object.keys(obj).forEach(function (ch) {
-                    extended[ch] = obj[ch];
-                });
-                return extended;
-            }
-        });
+        extend: function (obj) {
+            var extended = Object.create(this);
+            Object.keys(obj).forEach(function (ch) {
+                extended[ch] = obj[ch];
+            });
+            return extended;
+        }
+    });
     parser.setReadtable(baseReadtable, syn);
     function ensureStxcaseCtx() {
         if (!stxcaseCtx) {
@@ -143,6 +171,10 @@
         if (code === '') {
             // old version of esprima doesn't play nice with the empty string
             // and loc/range info so until we can upgrade hack in a single space
+            // old version of esprima doesn't play nice with the empty string
+            // and loc/range info so until we can upgrade hack in a single space
+            // old version of esprima doesn't play nice with the empty string
+            // and loc/range info so until we can upgrade hack in a single space
             code = ' ';
         }
         modules = modules ? loadedMacros.concat(modules) : modules;
@@ -188,12 +220,12 @@
             moduleName = path.resolve(root, moduleName);
         }
         var filename = resolveSync(moduleName, {
-                basedir: root,
-                extensions: [
-                    '.js',
-                    '.sjs'
-                ]
-            });
+            basedir: root,
+            extensions: [
+                '.js',
+                '.sjs'
+            ]
+        });
         return expandModule(fs.readFileSync(filename, 'utf8'), undefined, {
             filename: moduleName,
             requireModule: options.requireModule || requireModule
@@ -224,6 +256,16 @@
         // verboten so we don't accidently mangle a name to match. This could
         // cause seriously hard to find bugs if you were just testing with
         // --readable-names on.
+        // The first pass over the scope collects any non-static references,
+        // which means references from the global scope. We need to make these
+        // verboten so we don't accidently mangle a name to match. This could
+        // cause seriously hard to find bugs if you were just testing with
+        // --readable-names on.
+        // The first pass over the scope collects any non-static references,
+        // which means references from the global scope. We need to make these
+        // verboten so we don't accidently mangle a name to match. This could
+        // cause seriously hard to find bugs if you were just testing with
+        // --readable-names on.
         scopes.forEach(function (scope) {
             scope.scrubbed = new expander.StringMap();
             // There aren't any references declared in the global scope since
@@ -238,6 +280,10 @@
                 }
             });
         });
+        // The second pass mangles the names to get rid of the hygiene tag
+        // wherever possible.
+        // The second pass mangles the names to get rid of the hygiene tag
+        // wherever possible.
         // The second pass mangles the names to get rid of the hygiene tag
         // wherever possible.
         scopes.forEach(function (scope) {
@@ -283,5 +329,5 @@
     exports$2.loadNodeModule = loadNodeModule;
     exports$2.loadedMacros = loadedMacros;
     exports$2.loadMacro = loadMacro;
-}));
+});
 //# sourceMappingURL=sweet.js.map
