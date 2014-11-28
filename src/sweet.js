@@ -157,7 +157,7 @@
         if (!isSyntax) {
             stx = syn.tokensToSyntax(stx);
         }
-        
+
         try {
             var result = expander.expand(stx, [stxcaseCtx].concat(modules), options);
             return isSyntax ? result : syn.syntaxToTokens(result);
@@ -231,7 +231,7 @@
     function currentReadtable() {
         return parser.currentReadtable();
     }
-    
+
     function loadNodeModule(root, moduleName, options) {
         options = options || {};
         if (moduleName[0] === '.') {
@@ -329,8 +329,10 @@
 
     // syntax sugar for
     // sweet.loadedMacros.push(sweet.loadNodeModule(process.cwd(), './macros/str'));
-    function loadMacro (relative_file) {
-      loadedMacros.push(loadNodeModule(process.cwd(), relative_file));
+    function loadMacro(relative_file) {
+        var mod = loadNodeModule(process.cwd(), relative_file)
+        loadedMacros.push(mod);
+        return mod;
     }
 
     exports.expand = expand;
